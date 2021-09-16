@@ -56,3 +56,15 @@ test("shuntingYard", () => {
     ])
   ).toEqual([3, 4, 2, "*", 1, 5, "-", "/", "+"]);
 });
+
+test("calc", () => {
+  calc("1 + 1", (out) => {
+    expect(out).toBe(2);
+  });
+  calc("3 + 4 * 2 / ( 1 - 5 )", (out) => {
+    expect(out).toBe(1);
+  });
+  calc("(6 + 1.5 * (4 + 4 + 4)) * .75", (out) => {
+    expect(out).toBe(18);
+  });
+});

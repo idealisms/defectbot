@@ -32,28 +32,28 @@ function shouldPop(operator_stack, op1) {
 
 // https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 function shuntingYard(tokens) {
-  const output_queue = []; // append only
-  const operator_stack = []; // top of the stack is the end
+  const outputQueue = []; // append only
+  const operatorStack = []; // top of the stack is the end
 
   for (const token of tokens) {
     if (Number.isFinite(Number.parseFloat(token))) {
-      output_queue.push(Number.parseFloat(token));
+      outputQueue.push(Number.parseFloat(token));
     } else if ("+-*/".indexOf(token) != -1) {
-      while (shouldPop(operator_stack, token)) {
-        output_queue.push(operator_stack.pop());
+      while (shouldPop(operatorStack, token)) {
+        outputQueue.push(operatorStack.pop());
       }
-      operator_stack.push(token);
+      operatorStack.push(token);
     } else if (token == "(") {
-      operator_stack.push(token);
+      operatorStack.push(token);
     } else if (token == ")") {
-      while (operator_stack[operator_stack.length - 1] != "(") {
-        if (operator_stack.length == 0) {
+      while (operatorStack[operatorStack.length - 1] != "(") {
+        if (operatorStack.length == 0) {
           console.log("Mismatched parentheses.");
           return [];
         }
-        output_queue.push(operator_stack.pop());
+        outputQueue.push(operatorStack.pop());
       }
-      if (operator_stack.pop() != "(") {
+      if (operatorStack.pop() != "(") {
         console.log("Should not be here. Missing open paren.");
         return [];
       }
@@ -62,24 +62,51 @@ function shuntingYard(tokens) {
       return [];
     }
   }
-  while (operator_stack.length > 0) {
-    const op = operator_stack.pop();
+  while (operatorStack.length > 0) {
+    const op = operatorStack.pop();
     if (op == "(") {
       console.log("Mismatched parentheses.");
       return [];
     }
-    output_queue.push(op);
+    outputQueue.push(op);
   }
-  return output_queue;
+  return outputQueue;
 }
 
-function evalRPN(operationStack) {}
+function evalRPN(operationStack) {
+  const numberStack = [];
+  for (const token of operationStack) {
+    if ("+-*/".indexOf(token) == -1) {
+      numberStack.push(token);
+    } else {
+      const n1 = numberStack.pop();
+      const n2 = numberStack.pop();
+      if (token == "+") {
+        numberStack.push(n2 + n1);
+      } else if (token == "-") {
+        numberStack.push(n2 - n1);
+      } else if (token == "*") {
+        numberStack.push(n2 * n1);
+      } else if (token == "/") {
+        numberStack.push(n2 / n1);
+      } else {
+        console.log("Unknown operator.");
+        return null;
+      }
+    }
+  }
+  if (numberStack.length != 1) {
+    console.log("Error evaluating RPN.");
+    return null;
+  }
+  return numberStack[0];
+}
 
 function calc(inputStr, say) {
   const tokens = tokenize(inputStr);
   const operationStack = shuntingYard(tokens);
   const results = evalRPN(operationStack);
-  if (results) {
+  if (results != null) {
     say(results);
   }
 }
