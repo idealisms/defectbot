@@ -107,7 +107,7 @@ function calc(inputStr, say) {
   const operationStack = shuntingYard(tokens);
   const results = evalRPN(operationStack);
   if (results != null) {
-    say(results);
+    say(results.toString());
   }
 }
 
