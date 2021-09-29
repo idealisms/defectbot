@@ -1,17 +1,45 @@
+const OPS = "+-*/";
+const PARENS = "()";
+const SYMBOLS = OPS + PARENS;
+
+function isValidNumber(str) {
+  return Number.isFinite(Number.parseFloat(str));
+}
+
+// Checks if str starts with a valid number. If it does,
+// appends the number to the results array.
+function startsWithNumber(str, results) {
+  const match = str.match(/^(([-]?\d+[.]?\d*)|([-]?[.]\d+))/);
+  if (match == null) {
+    return false;
+  }
+  results.push(match[0]);
+  return true;
+}
+
 function tokenize(inputStr) {
   // This regex creates tokens out of numbers, open paren, close paren, plus,
   // times, divide, and subtract.
-  const results = inputStr.match(/(\d|[.])+|[(]|[)]|[+]|[*]|[\/]|[-]/gm);
-  if (results === null) {
-    return [];
+  const results = [];
+  while (inputStr.length > 0) {
+    if (inputStr[0] == " ") {
+      inputStr = inputStr.slice(1);
+    } else if (
+      // Can't have two numbers in a row.
+      !isValidNumber(results[results.length - 1]) &&
+      startsWithNumber(inputStr, results)
+    ) {
+      inputStr = inputStr.slice(results[results.length - 1].length);
+    } else if (SYMBOLS.indexOf(inputStr[0]) != -1) {
+      results.push(inputStr[0]);
+      inputStr = inputStr.slice(1);
+    } else {
+      // Invalid token or two numbers in a row.
+      return [];
+    }
   }
 
-  return results.filter((token) => {
-    if ("()+-*/".indexOf(token) != -1) {
-      return true;
-    }
-    return isFinite(token);
-  });
+  return results;
 }
 
 function shouldPop(operator_stack, op1) {
@@ -36,9 +64,9 @@ function shuntingYard(tokens) {
   const operatorStack = []; // top of the stack is the end
 
   for (const token of tokens) {
-    if (Number.isFinite(Number.parseFloat(token))) {
+    if (isValidNumber(token)) {
       outputQueue.push(Number.parseFloat(token));
-    } else if ("+-*/".indexOf(token) != -1) {
+    } else if (OPS.indexOf(token) != -1) {
       while (shouldPop(operatorStack, token)) {
         outputQueue.push(operatorStack.pop());
       }
@@ -76,7 +104,7 @@ function shuntingYard(tokens) {
 function evalRPN(operationStack) {
   const numberStack = [];
   for (const token of operationStack) {
-    if ("+-*/".indexOf(token) == -1) {
+    if (OPS.indexOf(token) == -1) {
       numberStack.push(token);
     } else {
       const n1 = numberStack.pop();
