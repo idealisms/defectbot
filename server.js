@@ -1,7 +1,6 @@
 const secrets = require("secrets"); // Populates process.env from .env.
 const chatbot = require("./chatbot");
-const http = require("http");
-const fs = require("fs");
+const webserver = require("./webserver");
 
 // Define configuration options
 const opts = {
@@ -10,33 +9,17 @@ const opts = {
     password: process.env.OAUTH_TOKEN,
   },
   channels: [process.env.CHANNEL_NAME],
+  hostname: process.env.HOSTNAME || "localhost",
+  httpport: Number(process.env.HTTPPORT) || 8555,
 };
 
 const defectbot = chatbot.createChatbot(opts);
 defectbot.connect();
 
-const host = "localhost";
-const port = 8555;
+const webhttpserver = webserver.createWebServer(opts);
 
-const requestListener = (req, res) => {
-  console.log(req.method, req.url);
-  if (req.url == "/favicon.ico") {
-    res.writeHead(200);
-    res.end();
-  } else if (req.url == "/client.js") {
-    res.writeHead(200, { "Content-Type": "text/javascript" });
-    const stream = fs.createReadStream("client.js");
-    stream.pipe(res);
-  } else {
-    res.writeHead(200);
-    res.write(
-      '<html><head><script src="/client.js"></script></head><body></body></html>'
-    );
-    res.end();
-  }
-};
-
-const server = http.createServer(requestListener);
-server.listen(port, host, () => {
-  console.log(`Http server is running on http://${host}:${port}`);
+webhttpserver.listen(opts.httpport, opts.hostname, () => {
+  console.log(
+    `HTTP server is running on http://${opts.hostname}:${opts.httpport}`
+  );
 });
