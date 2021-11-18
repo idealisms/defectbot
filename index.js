@@ -1,6 +1,8 @@
 const tmi = require("tmi.js");
 const secrets = require("secrets");
 const commands = require("./commands");
+const http = require("http");
+const fs = require("fs");
 
 // Define configuration options
 const opts = {
@@ -46,3 +48,29 @@ function onConnectedHandler(addr, port) {
   console.log(`* Connected to ${addr}:${port}`);
   client.say(process.env.CHANNEL_NAME, "I am online.");
 }
+
+const host = "localhost";
+const port = 8555;
+
+const requestListener = (req, res) => {
+  console.log(req.method, req.url);
+  if (req.url == "/favicon.ico") {
+    res.writeHead(200);
+    res.end();
+  } else if (req.url == "/client.js") {
+    res.writeHead(200, { "Content-Type": "text/javascript" });
+    const stream = fs.createReadStream("client.js");
+    stream.pipe(res);
+  } else {
+    res.writeHead(200);
+    res.write(
+      '<html><head><script src="/client.js"></script></head><body></body></html>'
+    );
+    res.end();
+  }
+};
+
+const server = http.createServer(requestListener);
+server.listen(port, host, () => {
+  console.log(`Http server is running on http://${host}:${port}`);
+});
