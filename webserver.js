@@ -1,5 +1,6 @@
 const http = require("http");
 const fs = require("fs");
+const scramjet = require("scramjet");
 
 function createWebServer(opts) {
   const requestListener = (req, res) => {
@@ -9,8 +10,14 @@ function createWebServer(opts) {
       res.end();
     } else if (req.url == "/client.js") {
       res.writeHead(200, { "Content-Type": "text/javascript" });
-      const stream = fs.createReadStream("client.js");
-      stream.pipe(res);
+      fs.createReadStream("client.js")
+        .pipe(new scramjet.StringStream())
+        .lines()
+        .parse((line) =>
+          line.replace("PORT", opts.port).replace("HOSTNAME", opts.hostname)
+        )
+        .join("\n")
+        .pipe(res);
     } else {
       res.writeHead(200);
       res.write(

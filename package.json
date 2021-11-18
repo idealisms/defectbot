@@ -4,8 +4,10 @@
   "description": "A bot for twitch.tv/TonyTwitch",
   "main": "server.js",
   "dependencies": {
+    "scramjet": "^4.36.1",
     "secrets": "^1.1.5",
-    "tmi.js": "^1.8.5"
+    "tmi.js": "^1.8.5",
+    "websocket": "^1.0.34"
   },
   "devDependencies": {
     "jest": "^27.2.0"
