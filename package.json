@@ -2,7 +2,7 @@
   "name": "defectbot",
   "version": "0.0.1",
   "description": "A bot for twitch.tv/TonyTwitch",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "secrets": "^1.1.5",
     "tmi.js": "^1.8.5"
