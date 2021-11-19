@@ -1,25 +1,8 @@
-const http = require("http");
 const fs = require("fs");
+const http = require("http");
 const scramjet = require("scramjet");
 
-function createWebServer(opts) {
-  // A set of all the filenames.
-  const soundFilenames = new Set();
-  // Map command names to the sound file name.
-  const soundFilesMap = new Map();
-
-  fs.readdir("./sounds", (err, files) => {
-    for (const filename of files) {
-      if (
-        filename.toLowerCase().endsWith(".wav") ||
-        filename.toLowerCase().endsWith(".mp3")
-      ) {
-        soundFilenames.add(filename);
-        soundFilesMap.set(filename.substr(0, filename.length - 4), filename);
-      }
-    }
-  });
-
+function createWebServer(opts, soundFilenames) {
   const requestListener = (req, res) => {
     console.log(req.method, req.url);
     if (req.method != "GET") {

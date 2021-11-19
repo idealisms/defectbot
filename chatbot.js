@@ -1,7 +1,7 @@
 const tmi = require("tmi.js");
 const commands = require("./commands");
 
-function createChatbot(opts, webSocketServer) {
+function createChatbot(opts, webSocketServer, soundFilesMap) {
   // Create a client with our options
   const client = new tmi.client(opts);
 
@@ -24,12 +24,18 @@ function createChatbot(opts, webSocketServer) {
       commands.dice(commandInput, say);
     } else if (commandName === "!calc") {
       commands.calc(commandInput, say);
-    } else if (commandName == "!giraffe") {
-      // TODO: Remove this hardcoded command and add handling for all
-      // sound files.
+    } else if (commandName === "!listsounds") {
+      const commandsArray = Array.from(soundFilesMap.keys())
+        .sort()
+        .map((commandName) => `!${commandName}`);
+      say(`I know the following sounds: ${commandsArray.join(" ")}`);
+    } else if (soundFilesMap.has(commandName.substr(1).toLowerCase())) {
       for (const connection of webSocketServer.connections) {
         connection.sendUTF(
-          JSON.stringify({ cmd: "play", filename: "/sounds/Giraffe.wav" })
+          JSON.stringify({
+            cmd: "play",
+            filename: soundFilesMap.get(commandName.substr(1).toLowerCase()),
+          })
         );
       }
     } else {
