@@ -9,7 +9,6 @@ function createWebSocketServer(opts, httpServer) {
     const connection = request.accept(null, request.origin);
     connection.on("message", function (message) {
       console.log("Received Message:", message.utf8Data);
-      connection.sendUTF("Giraffe.");
     });
     connection.on("close", function (reasonCode, description) {
       console.log("Client has disconnected.");

@@ -3,8 +3,15 @@
 const ws = new WebSocket("ws://HOSTNAME:PORT/");
 ws.onopen = function () {
   console.log("WebSocket Client Connected");
-  ws.send("Giraffe?");
+  // Should we send a keep alive?
 };
-ws.onmessage = function (e) {
-  console.log("Received: '" + e.data + "'");
+ws.onmessage = function (event) {
+  console.log("Received: '" + event.data + "'");
+  const message = JSON.parse(event.data);
+  if (message.cmd == "play") {
+    var sound = new Howl({
+      src: [message.filename],
+    });
+    sound.play();
+  }
 };

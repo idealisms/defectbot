@@ -1,7 +1,7 @@
 const tmi = require("tmi.js");
 const commands = require("./commands");
 
-function createChatbot(opts) {
+function createChatbot(opts, webSocketServer) {
   // Create a client with our options
   const client = new tmi.client(opts);
 
@@ -24,6 +24,14 @@ function createChatbot(opts) {
       commands.dice(commandInput, say);
     } else if (commandName === "!calc") {
       commands.calc(commandInput, say);
+    } else if (commandName == "!giraffe") {
+      // TODO: Remove this hardcoded command and add handling for all
+      // sound files.
+      for (const connection of webSocketServer.connections) {
+        connection.sendUTF(
+          JSON.stringify({ cmd: "play", filename: "/sounds/Giraffe.wav" })
+        );
+      }
     } else {
       console.log(`* Unknown command ${commandName}`);
     }

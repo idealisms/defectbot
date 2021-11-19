@@ -14,12 +14,12 @@ const opts = {
   port: Number(process.env.PORT) || 8555,
 };
 
-const defectbot = chatbot.createChatbot(opts);
-defectbot.connect();
-
 const webServer = webserver.createWebServer(opts);
 webServer.listen(opts.port, opts.hostname, () => {
   console.log(`HTTP server is running on http://${opts.hostname}:${opts.port}`);
 });
 
 const webSocketServer = websocketserver.createWebSocketServer(opts, webServer);
+
+const defectbot = chatbot.createChatbot(opts, webSocketServer);
+defectbot.connect();
