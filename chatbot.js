@@ -28,7 +28,16 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
       const commandsArray = Array.from(soundFilesMap.keys())
         .sort()
         .map((commandName) => `!${commandName}`);
-      say(`I know the following sounds: ${commandsArray.join(" ")}`);
+      say(
+        `I know the following sounds: ${commandsArray
+          .slice(0, commandsArray.length / 2)
+          .join(" ")}`
+      );
+      say(
+        `I know the following sounds: ${commandsArray
+          .slice(commandsArray.length / 2)
+          .join(" ")}`
+      );
     } else if (soundFilesMap.has(commandName.substr(1).toLowerCase())) {
       for (const connection of webSocketServer.connections) {
         connection.sendUTF(
