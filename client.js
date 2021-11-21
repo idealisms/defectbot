@@ -30,7 +30,7 @@ function startWebsocket() {
       displayPlayers();
     } else if (message.cmd == "addplayer") {
       const players = JSON.parse(localStorage.getItem("players"));
-      if (players.indexOf(message.name) == -1) {
+      if (players.length > 0 && players.indexOf(message.name) == -1) {
         players.push(message.name);
         localStorage.setItem("players", JSON.stringify(players));
         displayPlayers();
@@ -55,10 +55,14 @@ function startWebsocket() {
   };
 }
 
-function displayPlayers(players) {
-  document.body.innerHTML = JSON.parse(localStorage.getItem("players")).join(
+function displayPlayers() {
+  const players = JSON.parse(localStorage.getItem("players"));
+  if (players.length == 0) {
+    document.body.innerHTML = "";
+  }
+  document.body.innerHTML = `Versus! Use !in to join.<br><br>${players.join(
     "<br>"
-  );
+  )}`;
 }
 
 window.onload = (event) => {

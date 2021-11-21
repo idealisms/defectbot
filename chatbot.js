@@ -68,7 +68,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
         cmd: "cleargame",
       });
     } else if (
-      ["!removename", "!removeplayer"].indexOf(command) != -1 &&
+      ["!removename", "!removeplayer"].indexOf(commandName) != -1 &&
       isModOrBroadcaster(tags)
     ) {
       var name = commandInput.trim();
