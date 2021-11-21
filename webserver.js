@@ -34,14 +34,8 @@ function createWebServer(opts, soundFilenames) {
         res.writeHead(404).end();
       }
     } else {
-      res.writeHead(200).write(
-        `<!DOCTYPE html>
-<html><head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.core.min.js" integrity="sha512-+wqa4/aOL4vwhL637A4p+6epqhUHDqpEfYJa1+PlzlMf908CSOb3xtIeKwZWh5Q0Q/R2nYUKxH4vvcQg+k8KKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="/client.js"></script>
-</head><body></body></html>`
-      );
-      res.end();
+      res.writeHead(200);
+      fs.createReadStream("client.html").pipe(res);
     }
   };
 

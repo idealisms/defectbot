@@ -4,11 +4,17 @@ if (localStorage.getItem("players") == null) {
   localStorage.setItem("players", JSON.stringify([]));
 }
 
+var openCount = 0;
+
 function startWebsocket() {
   var ws = new WebSocket("ws://HOSTNAME:PORT");
 
   ws.onopen = (event) => {
+    if (openCount > 0) {
+      window.location.reload();
+    }
     console.log("WebSocket Client Connected");
+    ++openCount;
   };
 
   ws.onmessage = (event) => {
