@@ -9,6 +9,12 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
   client.on("message", onMessageHandler);
   client.on("connected", onConnectedHandler);
 
+  const sendToWebSocketClients = (messageObject) => {
+    for (const connection of webSocketServer.connections) {
+      connection.sendUTF(JSON.stringify(messageObject));
+    }
+  };
+
   // Called every time a message comes in
   function onMessageHandler(channel, tags, msg, isSelf) {
     if (isSelf || !msg.startsWith("!")) {
@@ -18,6 +24,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
     const commandName = msg.split(" ", 1)[0];
     const commandInput = msg.slice(commandName.length + 1);
     const say = (txt) => client.say(channel, txt);
+    const isModOrBroadcaster = (tags) => tags.mod || tags.badges.broadcaster;
 
     // If the command is known, let's execute it
     if (commandName === "!dice") {
@@ -46,14 +53,37 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
         );
       }
     } else if (soundFilesMap.has(commandName.substr(1).toLowerCase())) {
-      for (const connection of webSocketServer.connections) {
-        connection.sendUTF(
-          JSON.stringify({
-            cmd: "play",
-            filename: soundFilesMap.get(commandName.substr(1).toLowerCase()),
-          })
-        );
+      sendToWebSocketClients({
+        cmd: "play",
+        filename: soundFilesMap.get(commandName.substr(1).toLowerCase()),
+      });
+    } else if (commandName == "!newgame" && isModOrBroadcaster(tags)) {
+      sendToWebSocketClients({
+        cmd: "newgame",
+        name: channel.slice(1),
+      });
+      say("A new game is starting. Type !in to join the game.");
+    } else if (commandName == "!cleargame" && isModOrBroadcaster(tags)) {
+      sendToWebSocketClients({
+        cmd: "cleargame",
+      });
+    } else if (
+      ["!removename", "!removeplayer"].indexOf(command) != -1 &&
+      isModOrBroadcaster(tags)
+    ) {
+      var name = commandInput.trim();
+      if (name.startsWith("@")) {
+        name = name.substr(1);
       }
+      sendToWebSocketClients({
+        cmd: "removeplayer",
+        name,
+      });
+    } else if (commandName == "!in") {
+      sendToWebSocketClients({
+        cmd: "addplayer",
+        name: tags["display-name"],
+      });
     } else {
       console.log(`* Unknown command ${commandName}`);
     }
