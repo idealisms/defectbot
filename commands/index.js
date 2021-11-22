@@ -1,4 +1,4 @@
-const calc = require('./calc');
-const dice = require('./dice');
+const calc = require("./calc");
+const Dice = require("./dice");
 
-module.exports = { calc, dice };
+module.exports = { calc, Dice };
