@@ -59,6 +59,7 @@ function displayPlayers() {
   const players = JSON.parse(localStorage.getItem("players"));
   if (players.length == 0) {
     document.body.innerHTML = "";
+    return;
   }
   document.body.innerHTML = `Versus! Use !in to join.<br><br>${players.join(
     "<br>"
