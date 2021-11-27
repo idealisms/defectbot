@@ -15,7 +15,10 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
     }
   };
 
-  const messageHandlers = [new commands.Dice(client)];
+  const messageHandlers = [
+    new commands.Dice(client),
+    new commands.Calc(client),
+  ];
 
   // Called every time a message comes in
   function onMessageHandler(channel, tags, msg, isSelf) {
@@ -38,9 +41,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
     if (!handled) {
       // Remove this after everything is transitioned to a message handler.
 
-      if (commandName === "!calc") {
-        commands.calc(commandInput, say);
-      } else if (commandName.startsWith("!listsounds")) {
+      if (commandName.startsWith("!listsounds")) {
         const commandsArray = Array.from(soundFilesMap.keys())
           .sort()
           .map((commandName) => `!${commandName}`);

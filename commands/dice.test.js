@@ -12,7 +12,7 @@ test("roll the die", () => {
 
   const mockClient = new MockClient();
   const dice = new Dice(mockClient);
-  dice.handle("channel", {}, "!dice", []);
+  dice.handle("channel", {}, "!dice", "");
   expect(mockClient.saylog.length).toBe(1);
   expect(mockClient.saylog[0].message).toMatch(/You rolled a [1-6][.]/);
 });

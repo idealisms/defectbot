@@ -130,16 +130,26 @@ function evalRPN(operationStack) {
   return numberStack[0];
 }
 
-function calc(inputStr, say) {
-  const tokens = tokenize(inputStr);
-  const operationStack = shuntingYard(tokens);
-  const results = evalRPN(operationStack);
-  if (results != null) {
-    say(results.toString());
+class Calc {
+  constructor(client) {
+    this.client = client;
+  }
+
+  handle(channel, tags, commandName, commandInput) {
+    if (commandName !== "!calc") {
+      return false;
+    }
+    const tokens = tokenize(commandInput);
+    const operationStack = shuntingYard(tokens);
+    const results = evalRPN(operationStack);
+    if (results != null) {
+      this.client.say(channel, results.toString());
+    }
+    return true;
   }
 }
 
-calc.tokenizeForTest = tokenize;
-calc.shuntingYardForTest = shuntingYard;
-calc.evalRPNForTest = evalRPN;
-module.exports = calc;
+Calc.tokenizeForTest = tokenize;
+Calc.shuntingYardForTest = shuntingYard;
+Calc.evalRPNForTest = evalRPN;
+module.exports = Calc;
