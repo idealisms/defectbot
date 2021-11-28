@@ -18,6 +18,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
   const messageHandlers = [
     new commands.Dice(client),
     new commands.Calc(client),
+    new commands.Sounds(client, soundFilesMap, webSocketServer),
   ];
 
   // Called every time a message comes in
@@ -40,34 +41,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
     }
     if (!handled) {
       // Remove this after everything is transitioned to a message handler.
-
-      if (commandName.startsWith("!listsounds")) {
-        const commandsArray = Array.from(soundFilesMap.keys())
-          .sort()
-          .map((commandName) => `!${commandName}`);
-        if (commandName === "!listsounds") {
-          say(
-            "Use !listsounds1 and !listsounds2 to see a list of Super Auto Pets sounds I know."
-          );
-        } else if (commandName === "!listsounds1") {
-          say(
-            `I know the following sounds: ${commandsArray
-              .slice(0, commandsArray.length / 2)
-              .join(" ")}`
-          );
-        } else if (commandName === "!listsounds2") {
-          say(
-            `I know the following sounds: ${commandsArray
-              .slice(commandsArray.length / 2)
-              .join(" ")}`
-          );
-        }
-      } else if (soundFilesMap.has(commandName.substr(1).toLowerCase())) {
-        sendToWebSocketClients({
-          cmd: "play",
-          filename: soundFilesMap.get(commandName.substr(1).toLowerCase()),
-        });
-      } else if (commandName == "!newgame" && isModOrBroadcaster(tags)) {
+      if (commandName == "!newgame" && isModOrBroadcaster(tags)) {
         sendToWebSocketClients({
           cmd: "newgame",
           name: channel.slice(1),
