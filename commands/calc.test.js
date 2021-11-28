@@ -1,4 +1,7 @@
 const Calc = require("./calc");
+const tmi = require("tmi.js");
+
+jest.mock("tmi.js");
 
 test("tokenize", () => {
   expect(Calc.tokenizeForTest("1+1")).toEqual(["1", "+", "1"]);
@@ -66,32 +69,20 @@ test("shuntingYard", () => {
 });
 
 test("!calc", () => {
-  class MockClient {
-    constructor() {
-      this.saylog = [];
-    }
-    say(channel, message) {
-      this.saylog.push({ channel, message });
-    }
-    lastSay() {
-      return this.saylog[this.saylog.length - 1].message;
-    }
-  }
-
-  const mockClient = new MockClient();
+  const mockClient = new tmi.client();
   const calc = new Calc(mockClient);
   calc.handle("channel", {}, "!calc", "1 + 1");
-  expect(mockClient.lastSay()).toBe("2");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "2");
   calc.handle("channel", {}, "!calc", "3 + 4 * 2 / ( 1 - 5 )");
-  expect(mockClient.lastSay()).toBe("1");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "1");
   calc.handle("channel", {}, "!calc", "(6 + 1.5 * (4 + 4 + 4)) * .75");
-  expect(mockClient.lastSay()).toBe("18");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "18");
   calc.handle("channel", {}, "!calc", "-2 * -3");
-  expect(mockClient.lastSay()).toBe("6");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "6");
   calc.handle("channel", {}, "!calc", "-2 * (-3+-4)");
-  expect(mockClient.lastSay()).toBe("14");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "14");
   calc.handle("channel", {}, "!calc", "-3--3");
-  expect(mockClient.lastSay()).toBe("0");
+  expect(mockClient.say).toHaveBeenCalledWith("channel", "0");
 
-  expect(mockClient.saylog.length).toBe(6);
+  expect(mockClient.say).toHaveBeenCalledTimes(6);
 });
