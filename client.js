@@ -61,9 +61,7 @@ function displayPlayers() {
     document.body.innerHTML = "";
     return;
   }
-  document.body.innerHTML = `Versus! Use !in to join.<br><br>${players.join(
-    "<br>"
-  )}`;
+  document.body.innerHTML = `!in to join versus<br><ol>${players.map(p => `<li>${p}</li>`).join()}</ol>`;
 }
 
 window.onload = (event) => {
