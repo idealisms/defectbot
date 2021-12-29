@@ -61,7 +61,7 @@ function displayPlayers() {
     document.body.innerHTML = "";
     return;
   }
-  document.body.innerHTML = `!in to join versus<br><ol>${players.map(p => `<li>${p}</li>`).join('')}</ol>`;
+  document.body.innerHTML = `!join to join versus<br><ol>${players.map(p => `<li>${p}</li>`).join('')}</ol>`;
 }
 
 window.onload = (event) => {

@@ -46,7 +46,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
           cmd: "newgame",
           name: channel.slice(1),
         });
-        say("A new game is starting. Type !in to join the game.");
+        say("A new game is starting. !join to join the game.");
       } else if (commandName == "!cleargame" && isModOrBroadcaster(tags)) {
         sendToWebSocketClients({
           cmd: "cleargame",
@@ -63,7 +63,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
           cmd: "removeplayer",
           name,
         });
-      } else if (commandName == "!in") {
+      } else if (["!in", "!join"].indexOf(commandName) != -1) {
         sendToWebSocketClients({
           cmd: "addplayer",
           name: tags["display-name"],
