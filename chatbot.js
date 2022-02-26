@@ -19,6 +19,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
     new commands.Dice(client),
     new commands.Calc(client),
     new commands.Sounds(client, soundFilesMap, webSocketServer),
+    new commands.Define(client),
   ];
 
   // Called every time a message comes in

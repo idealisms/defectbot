@@ -1,5 +1,6 @@
 const Calc = require("./calc");
+const Define = require("./define");
 const Dice = require("./dice");
 const Sounds = require("./sounds");
 
-module.exports = { Calc, Dice, Sounds };
+module.exports = { Calc, Define, Dice, Sounds };
