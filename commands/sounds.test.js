@@ -22,17 +22,7 @@ test("sounds", () => {
   expect(sounds.handle("channel", {}, "!listsounds", "")).toBe(true);
   expect(mockClient.say).toHaveBeenCalledWith(
     "channel",
-    "Use !listsounds1 and !listsounds2 to see a list of Super Auto Pets sounds I know."
-  );
-  expect(sounds.handle("channel", {}, "!listsounds1", "")).toBe(true);
-  expect(mockClient.say).toHaveBeenCalledWith(
-    "channel",
-    "I know the following sounds: !cat"
-  );
-  expect(sounds.handle("channel", {}, "!listsounds2", "")).toBe(true);
-  expect(mockClient.say).toHaveBeenCalledWith(
-    "channel",
-    "I know the following sounds: !dog !giraffe"
+    "I know the following sounds: https://raw.githubusercontent.com/idealisms/defectbot/main/sounds/list%20of%20animal%20sounds.txt"
   );
   expect(sounds.handle("channel", {}, "!pig", "")).toBe(false);
   expect(sounds.handle("channel", {}, "!dog", "")).toBe(true);
