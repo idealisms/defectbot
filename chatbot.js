@@ -18,6 +18,7 @@ function createChatbot(opts, webSocketServer, soundFilesMap) {
   const messageHandlers = [
     new commands.Dice(client),
     new commands.Calc(client),
+    new commands.CalcDraw(client),
     new commands.Sounds(client, soundFilesMap, webSocketServer),
     new commands.Define(client),
   ];
